@@ -341,8 +341,11 @@ if uploaded_file is not None:
                 cy_totalold = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
                 py_totalold = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
 
-                cy_total = int(df[df['Role Status'] == 'open']['Total Demand'].sum())
-                py_total = int(df_prev[df_prev['Role Status'] == 'open']['Total Demand'].sum())
+                cy_totalold2 = int(df[df['Role Status'] == 'open']['Total Demand'].sum())
+                py_totalold2 = int(df_prev[df_prev['Role Status'] == 'open']['Total Demand'].sum())
+
+                cy_total = int(pd.to_numeric(df[df['Role Status'].astype(str).str.lower() == 'open']['Total Demand'], errors='coerce').fillna(0).sum())
+                py_total = int(pd.to_numeric(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open']['Total Demand'], errors='coerce').fillna(0).sum())
 
                 diff      = cy_total - py_total
                 diff_pct  = round((diff / py_total * 100), 1) if py_total > 0 else 0
