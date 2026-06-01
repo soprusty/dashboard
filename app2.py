@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Customer Demand & Fulfillment Analytics",
@@ -127,7 +128,7 @@ html, body, [class*="css"] {
     border-radius: 12px !important;
 }
 
-/* ── TABLE WRAPPER ── */
+/* ── TABLE TITLE ── */
 .table-title {
     font-size: 0.85rem;
     font-weight: 600;
@@ -201,6 +202,15 @@ html, body, [class*="css"] {
     margin-top: 6px;
     font-family: 'DM Mono', monospace;
 }
+
+/* ── CHART CARD ── */
+.chart-card {
+    background: #ffffff;
+    border: 1px solid #e5eaf4;
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem 0.5rem 1.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -215,8 +225,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── FILE UPLOADER ────────────────────────────────────────────────────────────
-uploaded_file = st.file_uploader("Upload Resource Extract (Excel)", type=['xlsx', 'xls'])
+# ── FILE UPLOADERS ───────────────────────────────────────────────────────────
+ul_col1, ul_col2 = st.columns(2)
+with ul_col1:
+    uploaded_file = st.file_uploader("📂 Upload Current Year Extract (Excel)", type=['xlsx', 'xls'])
+with ul_col2:
+    uploaded_prev_file = st.file_uploader("📂 Upload Previous Year Extract (Excel)", type=['xlsx', 'xls'])
 
 if uploaded_file is not None:
     try:
@@ -317,6 +331,89 @@ if uploaded_file is not None:
             </div>""", unsafe_allow_html=True)
 
         st.markdown('<hr class="dash-divider">', unsafe_allow_html=True)
+
+        # ── DEMAND TREND CHART (shown only if prev year file uploaded) ────
+        if uploaded_prev_file is not None:
+            try:
+                df_prev = pd.read_excel(uploaded_prev_file)
+                df_prev.columns = df_prev.columns.str.strip()
+
+                # Open demands per period — current year
+                cy_open = df[df['Role Status'].astype(str).str.lower() == 'open']
+                cy_trend = cy_open.groupby('Period').size().reset_index(name='Open Demands')
+                cy_trend = cy_trend.sort_values('Period')
+
+                # Open demands per period — previous year
+                py_open = df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open']
+                py_trend = py_open.groupby('Period').size().reset_index(name='Open Demands')
+                py_trend = py_trend.sort_values('Period')
+
+                st.markdown('<div class="section-label">Demand Trend — This Year vs Last Year</div>', unsafe_allow_html=True)
+                st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+                st.markdown('<p class="table-title">Total Open Demands by Period</p>', unsafe_allow_html=True)
+
+                fig = go.Figure()
+
+                # Previous year line
+                fig.add_trace(go.Scatter(
+                    x=py_trend['Period'].astype(str),
+                    y=py_trend['Open Demands'],
+                    mode='lines+markers',
+                    name='Previous Year',
+                    line=dict(color='#94a3b8', width=2.5, dash='dot'),
+                    marker=dict(size=6, color='#94a3b8'),
+                    fill='tozeroy',
+                    fillcolor='rgba(148,163,184,0.07)'
+                ))
+
+                # Current year line
+                fig.add_trace(go.Scatter(
+                    x=cy_trend['Period'].astype(str),
+                    y=cy_trend['Open Demands'],
+                    mode='lines+markers',
+                    name='Current Year',
+                    line=dict(color='#2563eb', width=3),
+                    marker=dict(size=7, color='#2563eb', line=dict(width=2, color='#ffffff')),
+                    fill='tozeroy',
+                    fillcolor='rgba(37,99,235,0.08)'
+                ))
+
+                fig.update_layout(
+                    height=360,
+                    margin=dict(l=10, r=10, t=10, b=10),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family='DM Sans', size=12, color='#475569'),
+                    legend=dict(
+                        orientation='h',
+                        yanchor='bottom', y=1.02,
+                        xanchor='right', x=1,
+                        bgcolor='rgba(0,0,0,0)',
+                        font=dict(size=12)
+                    ),
+                    xaxis=dict(
+                        showgrid=False,
+                        tickangle=-30,
+                        tickfont=dict(size=11),
+                        linecolor='#e0e5ef',
+                        tickcolor='#e0e5ef',
+                    ),
+                    yaxis=dict(
+                        showgrid=True,
+                        gridcolor='#f1f5f9',
+                        tickfont=dict(size=11),
+                        linecolor='#e0e5ef',
+                        zeroline=False,
+                    ),
+                    hovermode='x unified'
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown('<hr class="dash-divider">', unsafe_allow_html=True)
+
+            except Exception as e:
+                st.warning(f"Could not render trend chart: {e}")
 
         # ── ROW 3 — SKILL GAP ANALYSIS ────────────────────────────────────
         st.markdown('<div class="section-label">Skill Gap Analysis</div>', unsafe_allow_html=True)
@@ -423,7 +520,7 @@ else:
             No data loaded
         </div>
         <div style="font-size: 0.82rem; color: #7a8aaa;">
-            Upload your resource extract Excel file above to populate the dashboard
+            Upload your current year resource extract above to populate the dashboard
         </div>
     </div>
     """, unsafe_allow_html=True)
