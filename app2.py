@@ -244,7 +244,6 @@ st.markdown("""
   <div>
     <div class="dash-title">Customer Demand & Fulfillment Analytics</span></div>    
   </div>
-  <div class="dash-badge">⬤ &nbsp;Live Dashboard</div>
 </div>
 """, unsafe_allow_html=True)
 
