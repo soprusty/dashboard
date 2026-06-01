@@ -220,7 +220,7 @@ st.markdown("""
 <div class="dash-header">
   <div>
     <div class="dash-title">Customer Demand &amp; Fulfillment Analytics</div>
-    <div class="dash-subtitle">Resource Demand Intelligence Platform</div>
+    
   </div>
 </div>
 """, unsafe_allow_html=True)
