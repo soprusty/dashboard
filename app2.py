@@ -31,16 +31,14 @@ html, body, [class*="css"] {
     justify-content: space-between;
     padding: 0 0 2rem 0;
     border-bottom: 1px solid #e0e5ef;
+    margin-top: 1in;
     margin-bottom: 2rem;
 }
 .dash-title {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #0f1c35;
-    letter-spacing: -0.3px;
-}
-.dash-title span {
     color: #2563eb;
+    letter-spacing: -0.3px;
 }
 .dash-subtitle {
     font-size: 0.82rem;
@@ -48,17 +46,6 @@ html, body, [class*="css"] {
     margin-top: 3px;
     font-family: 'DM Mono', monospace;
     letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-.dash-badge {
-    background: #eef3ff;
-    border: 1px solid #c7d7fd;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 0.78rem;
-    color: #2563eb;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.8px;
     text-transform: uppercase;
 }
 
@@ -94,15 +81,8 @@ html, body, [class*="css"] {
     top: 0; left: 0; right: 0;
     height: 3px;
     border-radius: 14px 14px 0 0;
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
 }
-.metric-card.blue::before   { background: linear-gradient(90deg, #2563eb, #60a5fa); }
-.metric-card.teal::before   { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
-.metric-card.amber::before  { background: linear-gradient(90deg, #d97706, #fbbf24); }
-.metric-card.rose::before   { background: linear-gradient(90deg, #e11d48, #fb7185); }
-.metric-card.violet::before { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
-.metric-card.indigo::before { background: linear-gradient(90deg, #4338ca, #818cf8); }
-.metric-card.green::before  { background: linear-gradient(90deg, #16a34a, #4ade80); }
-
 .metric-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(37,99,235,0.10);
@@ -120,15 +100,8 @@ html, body, [class*="css"] {
     line-height: 1;
     font-family: 'DM Mono', monospace;
     letter-spacing: -1px;
+    color: #2563eb;
 }
-.metric-value.blue   { color: #2563eb; }
-.metric-value.teal   { color: #0d9488; }
-.metric-value.amber  { color: #d97706; }
-.metric-value.rose   { color: #e11d48; }
-.metric-value.violet { color: #7c3aed; }
-.metric-value.indigo { color: #4338ca; }
-.metric-value.green  { color: #16a34a; }
-
 .metric-icon {
     font-size: 1.4rem;
     opacity: 0.3;
@@ -227,10 +200,10 @@ html, body, [class*="css"] {
     vertical-align: middle;
 }
 
-/* ── URGENT BADGE ── */
+/* ── URGENT NOTE ── */
 .urgent-note {
     font-size: 0.72rem;
-    color: #e11d48;
+    color: #2563eb;
     margin-top: 6px;
     font-family: 'DM Mono', monospace;
 }
@@ -242,8 +215,8 @@ html, body, [class*="css"] {
 st.markdown("""
 <div class="dash-header">
   <div>
-    <div class="dash-title">Customer Demand & Fulfillment Analytics</span></div>    
-     
+    <div class="dash-title">Customer Demand &amp; Fulfillment Analytics</div>
+    <div class="dash-subtitle">Resource Demand Intelligence Platform</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -259,13 +232,13 @@ if uploaded_file is not None:
         df['Role Start Date']    = pd.to_datetime(df['Start Week'],    errors='coerce')
         df['Demand Raised Date'] = pd.to_datetime(df['Created Date'],  errors='coerce')
 
-        current_period   = df['Period'].max()
-        open_df          = df[df['Role Status'].astype(str).str.lower() == 'open']
+        current_period    = df['Period'].max()
+        open_df           = df[df['Role Status'].astype(str).str.lower() == 'open']
         current_period_df = df[df['Period'] == current_period]
 
         st.markdown(f"""
         <div style="margin:0.5rem 0 2rem 0; font-size:0.82rem; color:#5a6a85;">
-            Analysis complete &nbsp;·&nbsp; Active period: 
+            Analysis complete &nbsp;·&nbsp; Active period:
             <span class="period-tag">{current_period}</span>
         </div>
         """, unsafe_allow_html=True)
@@ -280,73 +253,72 @@ if uploaded_file is not None:
 
         with r1c1:
             st.markdown(f"""
-            <div class="metric-card blue">
+            <div class="metric-card">
                 <div class="metric-icon">📋</div>
                 <div class="metric-label">Total Open Demands</div>
-                <div class="metric-value blue">{total_open}</div>
+                <div class="metric-value">{total_open}</div>
             </div>""", unsafe_allow_html=True)
 
         with r1c2:
             st.markdown(f"""
-            <div class="metric-card rose">
+            <div class="metric-card">
                 <div class="metric-icon">⚠️</div>
                 <div class="metric-label">Gaps — {current_period}</div>
-                <div class="metric-value rose">{total_gaps}</div>
+                <div class="metric-value">{total_gaps}</div>
             </div>""", unsafe_allow_html=True)
 
         with r1c3:
             st.markdown(f"""
-            <div class="metric-card teal">
+            <div class="metric-card">
                 <div class="metric-icon">🌐</div>
                 <div class="metric-label">Open Roles (Global = Y)</div>
-                <div class="metric-value teal">{global_count}</div>
+                <div class="metric-value">{global_count}</div>
             </div>""", unsafe_allow_html=True)
 
         st.markdown("<div style='margin:1.2rem 0'></div>", unsafe_allow_html=True)
 
         # ── ROW 2 — OPERATIONAL DETAIL ────────────────────────────────────
-        # st.markdown('<div class="section-label">Operational Detail</div>', unsafe_allow_html=True)
         r2c1, r2c2, r2c3, r2c4 = st.columns(4)
 
-        otm_no  = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
-        otm_yes = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
+        otm_no      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
+        otm_yes     = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
         new_demands = len(current_period_df[
             current_period_df['New/Backfill'].astype(str).str.lower() == 'new'])
-        urgent_new = len(current_period_df[
+        urgent_new  = len(current_period_df[
             (current_period_df['New/Backfill'].astype(str).str.lower() == 'new') &
             ((current_period_df['Start Week'] - current_period_df['Created Date']).dt.days <= 56)
         ])
 
         with r2c1:
             st.markdown(f"""
-            <div class="metric-card amber">
+            <div class="metric-card">
                 <div class="metric-icon">🔴</div>
                 <div class="metric-label">Open Demands (OTM No)</div>
-                <div class="metric-value amber">{otm_no}</div>
+                <div class="metric-value">{otm_no}</div>
             </div>""", unsafe_allow_html=True)
 
         with r2c2:
             st.markdown(f"""
-            <div class="metric-card green">
+            <div class="metric-card">
                 <div class="metric-icon">🟢</div>
                 <div class="metric-label">Open Demands (OTM Yes)</div>
-                <div class="metric-value green">{otm_yes}</div>
+                <div class="metric-value">{otm_yes}</div>
             </div>""", unsafe_allow_html=True)
 
         with r2c3:
             st.markdown(f"""
-            <div class="metric-card indigo">
+            <div class="metric-card">
                 <div class="metric-icon">✨</div>
                 <div class="metric-label">New Demands — {current_period}</div>
-                <div class="metric-value indigo">{new_demands}</div>
+                <div class="metric-value">{new_demands}</div>
             </div>""", unsafe_allow_html=True)
 
         with r2c4:
             st.markdown(f"""
-            <div class="metric-card violet">
+            <div class="metric-card">
                 <div class="metric-icon">🚨</div>
                 <div class="metric-label">Urgent New (≤ 8 Weeks)</div>
-                <div class="metric-value violet">{urgent_new}</div>
+                <div class="metric-value">{urgent_new}</div>
                 <div class="urgent-note">⚡ Start date within 56 days</div>
             </div>""", unsafe_allow_html=True)
 
@@ -455,7 +427,7 @@ else:
         margin-top: 1rem;
         box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     ">
-        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;"></div>
+        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;">📂</div>
         <div style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
             No data loaded
         </div>
