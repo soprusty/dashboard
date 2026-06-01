@@ -338,8 +338,11 @@ if uploaded_file is not None:
                 df_prev = pd.read_excel(uploaded_prev_file)
                 df_prev.columns = df_prev.columns.str.strip()
 
-                cy_total = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
-                py_total = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
+                cy_totalold = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
+                py_totalold = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
+
+                cy_total = int(df[df['Role Status'] == 'open']['Total Demand'].sum())
+                py_total = int(df_prev[df_prev['Role Status'] == 'open']['Total Demand'].sum())
 
                 diff      = cy_total - py_total
                 diff_pct  = round((diff / py_total * 100), 1) if py_total > 0 else 0
@@ -347,7 +350,7 @@ if uploaded_file is not None:
                 arrow     = "\u25b2" if diff >= 0 else "\u25bc"
                 diff_color = "#16a34a" if diff >= 0 else "#e11d48"
 
-                st.markdown('<div class="section-label">Demand Comparison \u2014 This Year vs Last Year</div>', unsafe_allow_html=True)
+                st.markdown('<div class="section-label">Demand Comparison \u2014 Week by Week</div>', unsafe_allow_html=True)
 
                 fig = go.Figure(go.Bar(
                     x=["Total Open Demands (Previous Year)", "Total Open Demands (Current Year)"],
