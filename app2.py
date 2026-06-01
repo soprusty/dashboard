@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 st.set_page_config(
-    page_title="CustomerDemand & Fulfillment Analytics",
+    page_title="Customer Demand & Fulfillment Analytics",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -242,8 +242,8 @@ html, body, [class*="css"] {
 st.markdown("""
 <div class="dash-header">
   <div>
-    <div class="dash-title">Demand &amp; Fulfillment <span>Analytics</span></div>
-    <div class="dash-subtitle">Resource Demand Intelligence Platform</div>
+    <div class="dash-title">Customer Demand & Fulfillment Analytics</span></div>
+    #<div class="dash-subtitle">Resource Demand Intelligence Platform</div>
   </div>
   <div class="dash-badge">⬤ &nbsp;Live Dashboard</div>
 </div>
