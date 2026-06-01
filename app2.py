@@ -304,7 +304,7 @@ if uploaded_file is not None:
         st.markdown("<div style='margin:1.2rem 0'></div>", unsafe_allow_html=True)
 
         # ── ROW 2 — OPERATIONAL DETAIL ────────────────────────────────────
-        st.markdown('<div class="section-label">Operational Detail</div>', unsafe_allow_html=True)
+        # st.markdown('<div class="section-label">Operational Detail</div>', unsafe_allow_html=True)
         r2c1, r2c2, r2c3, r2c4 = st.columns(4)
 
         otm_no  = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
