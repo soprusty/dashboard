@@ -242,9 +242,7 @@ html, body, [class*="css"] {
 st.markdown("""
 <div class="dash-header">
   <div>
-    
-    <div class="dash-title">Customer Demand & Fulfillment Analytics</span></div>
-    
+    <div class="dash-title">Customer Demand & Fulfillment Analytics</span></div>    
   </div>
   <div class="dash-badge">⬤ &nbsp;Live Dashboard</div>
 </div>
