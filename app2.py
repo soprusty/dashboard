@@ -31,7 +31,7 @@ html, body, [class*="css"] {
     justify-content: space-between;
     padding: 0 0 2rem 0;
     border-bottom: 1px solid #e0e5ef;
-    margin-top: 0.5in;
+    margin-top: 0.1in;
     margin-bottom: 2rem;
 }
 .dash-title {
