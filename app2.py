@@ -332,88 +332,69 @@ if uploaded_file is not None:
 
         st.markdown('<hr class="dash-divider">', unsafe_allow_html=True)
 
-        # ── DEMAND TREND CHART (shown only if prev year file uploaded) ────
+        # ── DEMAND COMPARISON (shown only if prev year file uploaded) ────
         if uploaded_prev_file is not None:
             try:
                 df_prev = pd.read_excel(uploaded_prev_file)
                 df_prev.columns = df_prev.columns.str.strip()
 
-                # Open demands per period — current year
-                cy_open = df[df['Role Status'].astype(str).str.lower() == 'open']
-                cy_trend = cy_open.groupby('Period').size().reset_index(name='Open Demands')
-                cy_trend = cy_trend.sort_values('Period')
+                cy_total = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
+                py_total = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
 
-                # Open demands per period — previous year
-                py_open = df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open']
-                py_trend = py_open.groupby('Period').size().reset_index(name='Open Demands')
-                py_trend = py_trend.sort_values('Period')
+                diff      = cy_total - py_total
+                diff_pct  = round((diff / py_total * 100), 1) if py_total > 0 else 0
+                sign      = "+" if diff >= 0 else ""
+                arrow     = "\u25b2" if diff >= 0 else "\u25bc"
+                diff_color = "#16a34a" if diff >= 0 else "#e11d48"
 
-                st.markdown('<div class="section-label">Demand Trend — This Year vs Last Year</div>', unsafe_allow_html=True)
-                st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-                st.markdown('<p class="table-title">Total Open Demands by Period</p>', unsafe_allow_html=True)
+                st.markdown('<div class="section-label">Demand Comparison \u2014 This Year vs Last Year</div>', unsafe_allow_html=True)
 
-                fig = go.Figure()
-
-                # Previous year line
-                fig.add_trace(go.Scatter(
-                    x=py_trend['Period'].astype(str),
-                    y=py_trend['Open Demands'],
-                    mode='lines+markers',
-                    name='Previous Year',
-                    line=dict(color='#94a3b8', width=2.5, dash='dot'),
-                    marker=dict(size=6, color='#94a3b8'),
-                    fill='tozeroy',
-                    fillcolor='rgba(148,163,184,0.07)'
-                ))
-
-                # Current year line
-                fig.add_trace(go.Scatter(
-                    x=cy_trend['Period'].astype(str),
-                    y=cy_trend['Open Demands'],
-                    mode='lines+markers',
-                    name='Current Year',
-                    line=dict(color='#2563eb', width=3),
-                    marker=dict(size=7, color='#2563eb', line=dict(width=2, color='#ffffff')),
-                    fill='tozeroy',
-                    fillcolor='rgba(37,99,235,0.08)'
+                fig = go.Figure(go.Bar(
+                    x=["Total Open Demands (Previous Year)", "Total Open Demands (Current Year)"],
+                    y=[py_total, cy_total],
+                    marker_color=["#94a3b8", "#2563eb"],
+                    text=[py_total, cy_total],
+                    textposition="outside",
+                    textfont=dict(size=20, family="DM Mono"),
+                    width=0.4,
                 ))
 
                 fig.update_layout(
                     height=360,
-                    margin=dict(l=10, r=10, t=10, b=10),
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    font=dict(family='DM Sans', size=12, color='#475569'),
-                    legend=dict(
-                        orientation='h',
-                        yanchor='bottom', y=1.02,
-                        xanchor='right', x=1,
-                        bgcolor='rgba(0,0,0,0)',
-                        font=dict(size=12)
-                    ),
+                    margin=dict(l=20, r=20, t=20, b=20),
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    showlegend=False,
+                    font=dict(family="DM Sans", size=13, color="#475569"),
                     xaxis=dict(
                         showgrid=False,
-                        tickangle=-30,
-                        tickfont=dict(size=11),
-                        linecolor='#e0e5ef',
-                        tickcolor='#e0e5ef',
+                        linecolor="#e0e5ef",
+                        tickfont=dict(size=13, color="#1e293b"),
                     ),
                     yaxis=dict(
+                        title="Total Open Demands",
                         showgrid=True,
-                        gridcolor='#f1f5f9',
-                        tickfont=dict(size=11),
-                        linecolor='#e0e5ef',
+                        gridcolor="#f1f5f9",
+                        tickfont=dict(size=12),
                         zeroline=False,
+                        range=[0, max(cy_total, py_total) * 1.3],
                     ),
-                    hovermode='x unified'
                 )
 
                 st.plotly_chart(fig, use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+
+                callout = f"{arrow} {sign}{diff} ({sign}{diff_pct}%) vs previous year"
+                st.markdown(
+                    f'<div style="text-align:center;margin-top:-0.8rem;margin-bottom:1rem;' +
+                    f'font-size:0.9rem;font-weight:600;color:{diff_color};' +
+                    f'font-family:DM Mono,monospace;">{callout}</div>',
+                    unsafe_allow_html=True
+                )
+
                 st.markdown('<hr class="dash-divider">', unsafe_allow_html=True)
 
             except Exception as e:
-                st.warning(f"Could not render trend chart: {e}")
+                st.warning(f"Could not render comparison chart: {e}")
 
         # ── ROW 3 — SKILL GAP ANALYSIS ────────────────────────────────────
         st.markdown('<div class="section-label">Skill Gap Analysis</div>', unsafe_allow_html=True)
