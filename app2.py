@@ -31,7 +31,7 @@ html, body, [class*="css"] {
     justify-content: space-between;
     padding: 0 0 2rem 0;
     border-bottom: 1px solid #e0e5ef;
-    margin-top: 0.2in;
+    margin-top: 0.5rem;
     margin-bottom: 2rem;
 }
 .dash-title {
@@ -128,19 +128,12 @@ html, body, [class*="css"] {
 }
 
 /* ── TABLE WRAPPER ── */
-.table-card {
-    background: #ffffff;
-    border: 1px solid #e5eaf4;
-    border-radius: 14px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
 .table-title {
     font-size: 0.85rem;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 1rem;
+    margin: 0 0 0.6rem 0;
+    padding: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -152,6 +145,7 @@ html, body, [class*="css"] {
     height: 14px;
     background: #2563eb;
     border-radius: 2px;
+    flex-shrink: 0;
 }
 
 /* ── FILE UPLOADER ── */
@@ -216,7 +210,7 @@ st.markdown("""
 <div class="dash-header">
   <div>
     <div class="dash-title">Customer Demand &amp; Fulfillment Analytics</div>
-    
+    <div class="dash-subtitle">Resource Demand Intelligence Platform</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -333,7 +327,7 @@ if uploaded_file is not None:
             top_skills_gap.columns = ['Mandatory Skill', 'Total Gap Count']
             top_skills_gap.index = top_skills_gap.index + 1
 
-            st.markdown('<div class="table-card"><div class="table-title">Top 5 Mandatory Skill Gaps (Gap = 1)</div>', unsafe_allow_html=True)
+            st.markdown('<p class="table-title">Top 5 Mandatory Skill Gaps (Gap = 1)</p>', unsafe_allow_html=True)
             st.dataframe(
                 top_skills_gap,
                 hide_index=False,
@@ -349,7 +343,6 @@ if uploaded_file is not None:
                     ),
                 }
             )
-            st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.info("No records found with a Gap of 1.")
 
@@ -368,7 +361,7 @@ if uploaded_file is not None:
         status_breakup.index = status_breakup.index + 1
 
         with t_col1:
-            st.markdown('<div class="table-card"><div class="table-title">Top 5 Client Accounts — Highest Open Demand</div>', unsafe_allow_html=True)
+            st.markdown('<p class="table-title">Top 5 Client Accounts — Highest Open Demand</p>', unsafe_allow_html=True)
             st.dataframe(
                 top_clients_data,
                 hide_index=False,
@@ -384,10 +377,9 @@ if uploaded_file is not None:
                     ),
                 }
             )
-            st.markdown('</div>', unsafe_allow_html=True)
 
         with t_col2:
-            st.markdown('<div class="table-card"><div class="table-title">Open Demand Breakup — Project Status</div>', unsafe_allow_html=True)
+            st.markdown('<p class="table-title">Open Demand Breakup — Project Status</p>', unsafe_allow_html=True)
             st.dataframe(
                 status_breakup,
                 hide_index=False,
@@ -403,7 +395,6 @@ if uploaded_file is not None:
                     ),
                 }
             )
-            st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<hr class="dash-divider">', unsafe_allow_html=True)
 
