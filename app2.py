@@ -454,7 +454,7 @@ else:
         margin-top: 1rem;
         box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     ">
-        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;">📂</div>
+        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;"></div>
         <div style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
             No data loaded
         </div>
