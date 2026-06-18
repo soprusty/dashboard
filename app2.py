@@ -253,7 +253,7 @@ if uploaded_file is not None:
 
         # ── ROW 1 — DEMAND SUMMARY ────────────────────────────────────────
         st.markdown('<div class="section-label">Demand Summary</div>', unsafe_allow_html=True)
-        r1c1, r1c2, r1c3 = st.columns(3)
+        r1c1, r1c2 = st.columns(3)
 
         total_open   = len(open_df)
         total_gaps   = int(current_period_df['Gap'].sum())
