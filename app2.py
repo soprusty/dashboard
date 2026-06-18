@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 st.set_page_config(
-    page_title="Customer Demand & Fulfillment Analytics",
+    page_title="Consumer Supply and Demand Analytics",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -219,7 +219,7 @@ html, body, [class*="css"] {
 st.markdown("""
 <div class="dash-header">
   <div>
-    <div class="dash-title">Customer Demand &amp; Fulfillment Analytics</div>
+    <div class="dash-title">Consumer Supply and Demand Analytics</div>
     
   </div>
 </div>
