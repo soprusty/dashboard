@@ -275,13 +275,7 @@ if uploaded_file is not None:
                 <div class="metric-value">{total_gaps}</div>
             </div>""", unsafe_allow_html=True)
 
-        with r1c3:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-icon">🌐</div>
-                <div class="metric-label">Open Roles (Global = Y)</div>
-                <div class="metric-value">{global_count}</div>
-            </div>""", unsafe_allow_html=True)
+       
 
         st.markdown("<div style='margin:1.2rem 0'></div>", unsafe_allow_html=True)
 
