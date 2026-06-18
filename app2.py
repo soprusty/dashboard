@@ -274,9 +274,8 @@ if uploaded_file is not None:
                 <div class="metric-label">Gaps — {current_period}</div>
                 <div class="metric-value">{total_gaps}</div>
             </div>""", unsafe_allow_html=True)
-
-
-         with r1c3:
+        
+        with r1c3:
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-icon">🌐</div>
