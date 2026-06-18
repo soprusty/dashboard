@@ -228,9 +228,9 @@ st.markdown("""
 # ── FILE UPLOADERS ───────────────────────────────────────────────────────────
 ul_col1, ul_col2 = st.columns(2)
 with ul_col1:
-    uploaded_file = st.file_uploader("📂 Upload Current Year Extract (Excel)", type=['xlsx', 'xls'])
+    uploaded_file = st.file_uploader("📂 Upload Current Week Extract (Excel)", type=['xlsx', 'xls'])
 with ul_col2:
-    uploaded_prev_file = st.file_uploader("📂 Upload Previous Year Extract (Excel)", type=['xlsx', 'xls'])
+    uploaded_prev_file = st.file_uploader("📂 Upload Previous Week Extract (Excel)", type=['xlsx', 'xls'])
 
 if uploaded_file is not None:
     try:
