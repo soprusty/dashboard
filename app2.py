@@ -255,39 +255,37 @@ if uploaded_file is not None:
         st.markdown('<div class="section-label">Demand Summary</div>', unsafe_allow_html=True)
         r1c1, r1c2 = st.columns(2)
 
-        total_open   = len(open_df)
-        total_gaps   = int(current_period_df['Gap'].sum())
-        #global_count = len(open_df[open_df['Global(Y/N)'].astype(str).str.lower() == 'y'])
+        total_open  = len(open_df)
+        total_gaps  = int(current_period_df['Gap'].sum())
 
-        # AFTER
-otm_no  = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
-otm_yes = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
-otm_no_pct  = round(otm_no  / total_open * 100) if total_open else 0
-otm_yes_pct = round(otm_yes / total_open * 100) if total_open else 0
+        # ✅ FIX 1 — correctly indented inside try block (was at column 0)
+        otm_no      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
+        otm_yes     = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
+        otm_no_pct  = round(otm_no  / total_open * 100) if total_open else 0
+        otm_yes_pct = round(otm_yes / total_open * 100) if total_open else 0
 
-with r1c1:
-    st.markdown(f"""
-    <div class="metric-card" style="height:auto; min-height:150px;">
-        <div class="metric-icon">📋</div>
-        <div class="metric-label">Total Open Demands</div>
-        <div class="metric-value">{total_open}</div>
-
-        <!-- split bar -->
-        <div style="margin-top:0.9rem;">
-            <div style="display:flex; height:6px; border-radius:4px; overflow:hidden; background:#f1f5f9;">
-                <div style="width:{otm_no_pct}%; background:#e11d48;"></div>
-                <div style="width:{otm_yes_pct}%; background:#16a34a;"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-top:0.45rem;">
-                <span style="font-size:0.72rem; color:#e11d48; font-family:'DM Mono',monospace; font-weight:600;">
-                    🔴 OTM No &nbsp;{otm_no} &nbsp;<span style="color:#94a3b8;">({otm_no_pct}%)</span>
-                </span>
-                <span style="font-size:0.72rem; color:#16a34a; font-family:'DM Mono',monospace; font-weight:600;">
-                    🟢 OTM Yes &nbsp;{otm_yes} &nbsp;<span style="color:#94a3b8;">({otm_yes_pct}%)</span>
-                </span>
-            </div>
-        </div>
-    </div>""", unsafe_allow_html=True)
+        # ✅ FIX 1 continued — with r1c1 block correctly indented
+        with r1c1:
+            st.markdown(f"""
+            <div class="metric-card" style="height:auto; min-height:150px;">
+                <div class="metric-icon">📋</div>
+                <div class="metric-label">Total Open Demands</div>
+                <div class="metric-value">{total_open}</div>
+                <div style="margin-top:0.9rem;">
+                    <div style="display:flex; height:6px; border-radius:4px; overflow:hidden; background:#f1f5f9;">
+                        <div style="width:{otm_no_pct}%; background:#e11d48;"></div>
+                        <div style="width:{otm_yes_pct}%; background:#16a34a;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:0.45rem;">
+                        <span style="font-size:0.72rem; color:#e11d48; font-family:'DM Mono',monospace; font-weight:600;">
+                            🔴 OTM No &nbsp;{otm_no} &nbsp;<span style="color:#94a3b8;">({otm_no_pct}%)</span>
+                        </span>
+                        <span style="font-size:0.72rem; color:#16a34a; font-family:'DM Mono',monospace; font-weight:600;">
+                            🟢 OTM Yes &nbsp;{otm_yes} &nbsp;<span style="color:#94a3b8;">({otm_yes_pct}%)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>""", unsafe_allow_html=True)
 
         with r1c2:
             st.markdown(f"""
@@ -297,26 +295,18 @@ with r1c1:
                 <div class="metric-value">{total_gaps}</div>
             </div>""", unsafe_allow_html=True)
 
-       
-
         st.markdown("<div style='margin:1.2rem 0'></div>", unsafe_allow_html=True)
 
         # ── ROW 2 — OPERATIONAL DETAIL ────────────────────────────────────
-        #r2c1, r2c2, r2c3, r2c4 = st.columns(4)
-         r2c1, r2c2 = st.columns(2)
+        # ✅ FIX 2 — removed extra leading space (was " r2c1" causing IndentationError)
+        r2c1, r2c2 = st.columns(2)
 
-
-        #otm_no      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
-        #otm_yes     = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
         new_demands = len(current_period_df[
             current_period_df['New/Backfill'].astype(str).str.lower() == 'new'])
         urgent_new  = len(current_period_df[
             (current_period_df['New/Backfill'].astype(str).str.lower() == 'new') &
             ((current_period_df['Start Week'] - current_period_df['Created Date']).dt.days <= 56)
         ])
-
- 
- 
 
         with r2c1:
             st.markdown(f"""
