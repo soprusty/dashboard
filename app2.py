@@ -261,50 +261,75 @@ if uploaded_file is not None:
         otm_no       = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
         otm_yes      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
 
+        # REPLACE the entire with r1c1: block with this
+
         with r1c1:
+            otm_no_pct  = round(otm_no  / total_open * 100) if total_open else 0
+            otm_yes_pct = round(otm_yes / total_open * 100) if total_open else 0
+
+            # SVG donut math
+            r = 40  # radius
+            cx, cy = 60, 60  # center
+            circumference = 2 * 3.14159 * r  # ~251.3
+            no_dash  = round(otm_no  / total_open * circumference, 2) if total_open else 0
+            yes_dash = round(otm_yes / total_open * circumference, 2) if total_open else 0
+            no_offset  = 0
+            yes_offset = round(-no_dash, 2)
+
             st.markdown(f"""
-            <div class="metric-card" style="height:auto; min-height:130px;">
+            <div class="metric-card" style="height:auto; min-height:180px; padding-bottom:1.2rem;">
                 <div class="metric-icon">📋</div>
                 <div class="metric-label">Total Open Demands</div>
-                <div class="metric-value">{total_open}</div>
+
+                <div style="display:flex; align-items:center; gap:1.2rem; margin-top:0.6rem;">
+
+                    <!-- DONUT SVG -->
+                    <div style="flex-shrink:0;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <!-- background ring -->
+                            <circle cx="{cx}" cy="{cy}" r="{r}"
+                                fill="none" stroke="#f1f5f9" stroke-width="18"/>
+                            <!-- OTM No slice (red) -->
+                            <circle cx="{cx}" cy="{cy}" r="{r}"
+                                fill="none" stroke="#e11d48" stroke-width="18"
+                                stroke-dasharray="{no_dash} {circumference}"
+                                stroke-dashoffset="0"
+                                transform="rotate(-90 {cx} {cy})"/>
+                            <!-- OTM Yes slice (green) -->
+                            <circle cx="{cx}" cy="{cy}" r="{r}"
+                                fill="none" stroke="#16a34a" stroke-width="18"
+                                stroke-dasharray="{yes_dash} {circumference}"
+                                stroke-dashoffset="{yes_offset}"
+                                transform="rotate(-90 {cx} {cy})"/>
+                            <!-- centre total -->
+                            <text x="{cx}" y="{cy - 6}" text-anchor="middle"
+                                font-family="DM Mono,monospace" font-size="18"
+                                font-weight="700" fill="#2563eb">{total_open}</text>
+                            <text x="{cx}" y="{cy + 12}" text-anchor="middle"
+                                font-family="DM Sans,sans-serif" font-size="8"
+                                fill="#94a3b8">TOTAL</text>
+                        </svg>
+                    </div>
+
+                    <!-- LEGEND -->
+                    <div style="display:flex; flex-direction:column; gap:0.55rem;">
+                        <div>
+                            <div style="font-size:0.68rem; color:#94a3b8; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.5px;">OTM No</div>
+                            <div style="font-size:1.3rem; font-weight:700; font-family:'DM Mono',monospace; color:#e11d48; line-height:1.1;">
+                                {otm_no} <span style="font-size:0.72rem; color:#94a3b8; font-weight:400;">({otm_no_pct}%)</span>
+                            </div>
+                        </div>
+                        <div style="height:1px; background:#f1f5f9;"></div>
+                        <div>
+                            <div style="font-size:0.68rem; color:#94a3b8; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.5px;">OTM Yes</div>
+                            <div style="font-size:1.3rem; font-weight:700; font-family:'DM Mono',monospace; color:#16a34a; line-height:1.1;">
+                                {otm_yes} <span style="font-size:0.72rem; color:#94a3b8; font-weight:400;">({otm_yes_pct}%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>""", unsafe_allow_html=True)
-
-            fig_donut = go.Figure(go.Pie(
-                labels=["OTM No", "OTM Yes"],
-                values=[otm_no, otm_yes],
-                hole=0.65,
-                marker=dict(colors=["#e11d48", "#16a34a"],
-                            line=dict(color="#ffffff", width=2)),
-                textinfo="label+percent",
-                textfont=dict(size=12, family="DM Sans"),
-                hovertemplate="<b>%{label}</b><br>Count: %{value}<br>Share: %{percent}<extra></extra>",
-                direction="clockwise",
-                sort=False,
-            ))
-
-            fig_donut.add_annotation(
-                text=f"<b>{total_open}</b>",
-                x=0.5, y=0.5,
-                font=dict(size=22, family="DM Mono", color="#2563eb"),
-                showarrow=False,
-            )
-
-            fig_donut.update_layout(
-                height=240,
-                margin=dict(l=10, r=10, t=10, b=10),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                showlegend=True,
-                legend=dict(
-                    orientation="h",
-                    yanchor="bottom", y=-0.15,
-                    xanchor="center", x=0.5,
-                    font=dict(size=11, family="DM Sans"),
-                ),
-            )
-
-            st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
-
         with r1c2:
             st.markdown(f"""
             <div class="metric-card">
