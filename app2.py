@@ -220,7 +220,6 @@ st.markdown("""
 <div class="dash-header">
   <div>
     <div class="dash-title">Consumer Supply and Demand Analytics</div>
-    
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -255,27 +254,22 @@ if uploaded_file is not None:
         st.markdown('<div class="section-label">Demand Summary</div>', unsafe_allow_html=True)
         r1c1, r1c2 = st.columns(2)
 
-        # AFTER
-        total_open   = len(open_df)
-        total_gaps   = int(current_period_df['Gap'].sum())
-        otm_no       = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
-        otm_yes      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
+        total_open  = len(open_df)
+        total_gaps  = int(current_period_df['Gap'].sum())
+        otm_no      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
+        otm_yes     = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
+        otm_no_pct  = round(otm_no  / total_open * 100) if total_open else 0
+        otm_yes_pct = round(otm_yes / total_open * 100) if total_open else 0
 
-        # REPLACE the entire with r1c1: block with this
+        # SVG donut math
+        r           = 40
+        cx, cy      = 60, 60
+        circumference = round(2 * 3.14159 * r, 2)
+        no_dash     = round(otm_no  / total_open * circumference, 2) if total_open else 0
+        yes_dash    = round(otm_yes / total_open * circumference, 2) if total_open else 0
+        yes_offset  = round(-no_dash, 2)
 
         with r1c1:
-            otm_no_pct  = round(otm_no  / total_open * 100) if total_open else 0
-            otm_yes_pct = round(otm_yes / total_open * 100) if total_open else 0
-
-            # SVG donut math
-            r = 40  # radius
-            cx, cy = 60, 60  # center
-            circumference = 2 * 3.14159 * r  # ~251.3
-            no_dash  = round(otm_no  / total_open * circumference, 2) if total_open else 0
-            yes_dash = round(otm_yes / total_open * circumference, 2) if total_open else 0
-            no_offset  = 0
-            yes_offset = round(-no_dash, 2)
-
             st.markdown(f"""
             <div class="metric-card" style="height:auto; min-height:180px; padding-bottom:1.2rem;">
                 <div class="metric-icon">📋</div>
@@ -286,22 +280,18 @@ if uploaded_file is not None:
                     <!-- DONUT SVG -->
                     <div style="flex-shrink:0;">
                         <svg width="120" height="120" viewBox="0 0 120 120">
-                            <!-- background ring -->
                             <circle cx="{cx}" cy="{cy}" r="{r}"
                                 fill="none" stroke="#f1f5f9" stroke-width="18"/>
-                            <!-- OTM No slice (red) -->
                             <circle cx="{cx}" cy="{cy}" r="{r}"
                                 fill="none" stroke="#e11d48" stroke-width="18"
                                 stroke-dasharray="{no_dash} {circumference}"
                                 stroke-dashoffset="0"
                                 transform="rotate(-90 {cx} {cy})"/>
-                            <!-- OTM Yes slice (green) -->
                             <circle cx="{cx}" cy="{cy}" r="{r}"
                                 fill="none" stroke="#16a34a" stroke-width="18"
                                 stroke-dasharray="{yes_dash} {circumference}"
                                 stroke-dashoffset="{yes_offset}"
                                 transform="rotate(-90 {cx} {cy})"/>
-                            <!-- centre total -->
                             <text x="{cx}" y="{cy - 6}" text-anchor="middle"
                                 font-family="DM Mono,monospace" font-size="18"
                                 font-weight="700" fill="#2563eb">{total_open}</text>
@@ -330,6 +320,7 @@ if uploaded_file is not None:
 
                 </div>
             </div>""", unsafe_allow_html=True)
+
         with r1c2:
             st.markdown(f"""
             <div class="metric-card">
@@ -338,15 +329,11 @@ if uploaded_file is not None:
                 <div class="metric-value">{total_gaps}</div>
             </div>""", unsafe_allow_html=True)
 
-       
-
         st.markdown("<div style='margin:1.2rem 0'></div>", unsafe_allow_html=True)
 
         # ── ROW 2 — OPERATIONAL DETAIL ────────────────────────────────────
         r2c1, r2c2, r2c3, r2c4 = st.columns(4)
 
-        otm_no      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
-        otm_yes     = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
         new_demands = len(current_period_df[
             current_period_df['New/Backfill'].astype(str).str.lower() == 'new'])
         urgent_new  = len(current_period_df[
@@ -395,8 +382,8 @@ if uploaded_file is not None:
                 df_prev = pd.read_excel(uploaded_prev_file)
                 df_prev.columns = df_prev.columns.str.strip()
 
-                cy_totalold = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
-                py_totalold = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
+                cy_totalold  = len(df[df['Role Status'].astype(str).str.lower() == 'open'])
+                py_totalold  = len(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open'])
 
                 cy_totalold2 = int(df[df['Role Status'] == 'open']['Total Demand'].sum())
                 py_totalold2 = int(df_prev[df_prev['Role Status'] == 'open']['Total Demand'].sum())
@@ -404,10 +391,10 @@ if uploaded_file is not None:
                 cy_total = int(pd.to_numeric(df[df['Role Status'].astype(str).str.lower() == 'open']['Total Demand'], errors='coerce').fillna(0).sum())
                 py_total = int(pd.to_numeric(df_prev[df_prev['Role Status'].astype(str).str.lower() == 'open']['Total Demand'], errors='coerce').fillna(0).sum())
 
-                diff      = cy_total - py_total
-                diff_pct  = round((diff / py_total * 100), 1) if py_total > 0 else 0
-                sign      = "+" if diff >= 0 else ""
-                arrow     = "\u25b2" if diff >= 0 else "\u25bc"
+                diff       = cy_total - py_total
+                diff_pct   = round((diff / py_total * 100), 1) if py_total > 0 else 0
+                sign       = "+" if diff >= 0 else ""
+                arrow      = "\u25b2" if diff >= 0 else "\u25bc"
                 diff_color = "#16a34a" if diff >= 0 else "#e11d48"
 
                 st.markdown('<div class="section-label">Demand Comparison \u2014 Week by Week</div>', unsafe_allow_html=True)
