@@ -350,7 +350,7 @@ if uploaded_file is not None:
                 st.markdown('<div class="section-label">Demand Comparison \u2014 Week by Week</div>', unsafe_allow_html=True)
 
                 fig = go.Figure(go.Bar(
-                    x=["Total Open Demands (Previous Year)", "Total Open Demands (Current Year)"],
+                    x=["Total Open Demands (Previous Week)", "Total Open Demands (Current Week)"],
                     y=[py_total, cy_total],
                     marker_color=["#94a3b8", "#2563eb"],
                     text=[py_total, cy_total],
@@ -383,7 +383,7 @@ if uploaded_file is not None:
 
                 st.plotly_chart(fig, use_container_width=True)
 
-                callout = f"{arrow} {sign}{diff} ({sign}{diff_pct}%) vs previous year"
+                callout = f"{arrow} {sign}{diff} ({sign}{diff_pct}%) vs previous week"
                 st.markdown(
                     f'<div style="text-align:center;margin-top:-0.8rem;margin-bottom:1rem;' +
                     f'font-size:0.9rem;font-weight:600;color:{diff_color};' +
