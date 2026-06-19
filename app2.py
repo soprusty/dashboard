@@ -255,17 +255,55 @@ if uploaded_file is not None:
         st.markdown('<div class="section-label">Demand Summary</div>', unsafe_allow_html=True)
         r1c1, r1c2 = st.columns(2)
 
+        # AFTER
         total_open   = len(open_df)
         total_gaps   = int(current_period_df['Gap'].sum())
-        #global_count = len(open_df[open_df['Global(Y/N)'].astype(str).str.lower() == 'y'])
+        otm_no       = len(open_df[open_df['OTM'].astype(str).str.lower() == 'no'])
+        otm_yes      = len(open_df[open_df['OTM'].astype(str).str.lower() == 'yes'])
 
         with r1c1:
             st.markdown(f"""
-            <div class="metric-card">
+            <div class="metric-card" style="height:auto; min-height:130px;">
                 <div class="metric-icon">📋</div>
                 <div class="metric-label">Total Open Demands</div>
                 <div class="metric-value">{total_open}</div>
             </div>""", unsafe_allow_html=True)
+
+            fig_donut = go.Figure(go.Pie(
+                labels=["OTM No", "OTM Yes"],
+                values=[otm_no, otm_yes],
+                hole=0.65,
+                marker=dict(colors=["#e11d48", "#16a34a"],
+                            line=dict(color="#ffffff", width=2)),
+                textinfo="label+percent",
+                textfont=dict(size=12, family="DM Sans"),
+                hovertemplate="<b>%{label}</b><br>Count: %{value}<br>Share: %{percent}<extra></extra>",
+                direction="clockwise",
+                sort=False,
+            ))
+
+            fig_donut.add_annotation(
+                text=f"<b>{total_open}</b>",
+                x=0.5, y=0.5,
+                font=dict(size=22, family="DM Mono", color="#2563eb"),
+                showarrow=False,
+            )
+
+            fig_donut.update_layout(
+                height=240,
+                margin=dict(l=10, r=10, t=10, b=10),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                showlegend=True,
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom", y=-0.15,
+                    xanchor="center", x=0.5,
+                    font=dict(size=11, family="DM Sans"),
+                ),
+            )
+
+            st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
 
         with r1c2:
             st.markdown(f"""
